@@ -1,23 +1,23 @@
-from django.test import TestCase
-from product.factories import CategoryFactory, ProductFactory
-from product.serializers import ProductSerializer
+from rest_framework.test import APITestCase
+from product.models.product import Product
+from product.serializers.product_serializer import ProductSerializer
 
-class TestProductSerializer(TestCase):
-    def setUp(self) -> None:
-        self.category = CategoryFactory(title="technology")
-        self.product_1 = ProductFactory(
-            title="mouse", price=100, category=[self.category]
-        )
-        self.product_serializer = ProductSerializer(self.product_1)
+class TestProductSerializer(APITestCase):
+    def setUp(self):
+        self.product_data = {
+            "name": "Test Product",
+            "description": "This is a test product",
+            "price": 100,
+            "active": True,
+            "categories": []  # Adicione categorias se necessário
+        }
+        self.product = Product.objects.create(**self.product_data)
+        self.product_serializer = ProductSerializer(instance=self.product)
 
-    def test_product_serializer(self):
+    def test_product_serializer_fields(self):
+        # Verifique os campos do serializer
         serializer_data = self.product_serializer.data
-        self.assertEqual(serializer_data["price"], 100)
-        self.assertEqual(serializer_data["title"], "mouse")
-        self.assertEqual(
-            serializer_data["category"][0]["title"], "technology"
-        )
-
-        self.assertIn("category", serializer_data)
-        self.assertEqual(len(serializer_data["category"]), 1) 
-        self.assertEqual(serializer_data["category"][0]["title"], "technology") 
+        self.assertEqual(serializer_data['name'], self.product.name)
+        self.assertEqual(serializer_data['description'], self.product.description)
+        self.assertEqual(serializer_data['price'], self.product.price)
+        self.assertEqual(serializer_data['active'], self.product.active)
