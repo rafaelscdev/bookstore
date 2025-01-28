@@ -1,21 +1,18 @@
-from rest_framework.test import APITestCase
-from order.models.order import Order
-from product.models.product import Product
-from order.serializers.order_serializer import OrderSerializer
+from django.test import TestCase
+from order.factories import OrderFactory, ProductFactory
+from order.serializers import OrderSerializer
 
-class TestOrderSerializer(APITestCase):
-    def setUp(self):
-        self.product = Product.objects.create(
-            name="Test Product",
-            description="Test Description",
-            price=100,
-            active=True
-        )
-        self.order = Order.objects.create()
-        self.order.products.add(self.product)
-        self.order_serializer = OrderSerializer(instance=self.order)
+class TestOrderSerializer(TestCase):
+    def setUp(self) -> None:
+        self.product_1 = ProductFactory()
+        self.product_2 = ProductFactory()
+
+        self.order = OrderFactory(product=(self.product_1, self.product_2))
+        self.order_serializer = OrderSerializer(self.order)
 
     def test_order_serializer(self):
         serializer_data = self.order_serializer.data
-        self.assertIn('products', serializer_data)
-        self.assertEqual(serializer_data['products'][0]['name'], self.product.name)
+        self.assertEqual(
+            serializer_data["product"][0]["title"], self.product_1.title)
+        self.assertEqual(
+            serializer_data["product"][1]["title"], self.product_2.title)
