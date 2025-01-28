@@ -13,8 +13,10 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'price', 'category', 'category_id'] 
 
     def create(self, validated_data):
-        category_ids = validated_data.pop('category_id')
+        category_data = validated_data.pop('category_id')
+        
         product = Product.objects.create(**validated_data)
-        for category_id in category_ids:
-            product.category.add(category_id)
+        for category_id in category_data:
+            product.category.add(category)
+
         return product
