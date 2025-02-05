@@ -1,0 +1,34 @@
+
+
+services:
+  db:
+    image: postgres:13.0-alpine
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_USER: bookstore_dev
+      POSTGRES_PASSWORD: bookstore_dev
+      POSTGRES_DB: bookstore_dev_db
+
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+    environment:
+      SECRET_KEY: 1YjuO-DriSEw5kbAEno8luGKeqBxq5wF5T4Wv0mZoZ7JNlcr6lZ1D7hk9tytu6GG620
+      DEBUG: 1
+      DJANGO_ALLOWED_HOSTS: "localhost,127.0.0.1,[::1]"
+      SQL_ENGINE: django.db.backends.postgresql
+      SQL_DATABASE: bookstore_dev_db
+      SQL_USER: bookstore_dev
+      SQL_PASSWORD: bookstore_dev
+      SQL_HOST: db
+      SQL_PORT: 5432
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
