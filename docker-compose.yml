@@ -1,4 +1,4 @@
-
+version: "3.9"
 
 services:
   db:
@@ -11,6 +11,8 @@ services:
       POSTGRES_USER: bookstore_dev
       POSTGRES_PASSWORD: bookstore_dev
       POSTGRES_DB: bookstore_dev_db
+    networks:
+      - bookstore-network
 
   web:
     build: .
@@ -29,6 +31,11 @@ services:
       SQL_PORT: 5432
     depends_on:
       - db
+    networks:
+      - bookstore-network
 
 volumes:
   postgres_data:
+
+networks:
+  bookstore-network:
