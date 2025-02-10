@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()  # Carrega as variáveis de ambiente do arquivo .env
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -90,6 +93,9 @@ DATABASES = {
         'PASSWORD': os.environ.get("SQL_PASSWORD"),
         'HOST': os.environ.get("SQL_HOST"),
         'PORT': os.environ.get("SQL_PORT"),
+        'TEST': {
+            'NAME': 'test_' + os.environ.get("SQL_DATABASE"),  # Nome do banco de dados para testes
+        }
     }
 }
 
