@@ -25,7 +25,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-default-key-for-tests")
+SECRET_KEY = os.environ.get(
+    "SECRET_KEY", "django-insecure-default-key-for-tests"
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = int(os.environ.get("DEBUG", default=1))
@@ -88,14 +90,20 @@ WSGI_APPLICATION = 'bookstore.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
-        'NAME': os.environ.get("SQL_DATABASE", BASE_DIR / "db.sqlite3"),
+        'ENGINE': os.environ.get(
+            "SQL_ENGINE", "django.db.backends.sqlite3"
+        ),
+        'NAME': os.environ.get(
+            "SQL_DATABASE", BASE_DIR / "db.sqlite3"
+        ),
         'USER': os.environ.get("SQL_USER", ""),
         'PASSWORD': os.environ.get("SQL_PASSWORD", ""),
         'HOST': os.environ.get("SQL_HOST", ""),
         'PORT': os.environ.get("SQL_PORT", ""),
         'TEST': {
-            'NAME': 'test_' + os.environ.get("SQL_DATABASE", "test_db.sqlite3"),
+            'NAME': 'test_' + os.environ.get(
+                "SQL_DATABASE", "test_db.sqlite3"
+            ),
         }
     }
 }
@@ -146,7 +154,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'DEFAULT_PAGINATION_CLASS': (
+        'rest_framework.pagination.PageNumberPagination'
+    ),
     'PAGE_SIZE': 5,
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
