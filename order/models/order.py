@@ -4,7 +4,6 @@ from django.db import models
 from product.models import Product
 
 
-
 class Order(models.Model):
     user = models.ForeignKey(
         User,
