@@ -2,19 +2,35 @@ name: CI/CD
 
 on:
   push:
+    branches: [ main, github-actions ]
+  pull_request:
     branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      SECRET_KEY: 'django-insecure-test-key-123'
+      DEBUG: '1'
+      DJANGO_ALLOWED_HOSTS: 'localhost,127.0.0.1,[::1]'
+      SQL_ENGINE: 'django.db.backends.sqlite3'
+      SQL_DATABASE: 'db.sqlite3'
 
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up Python 3.9
+      - name: Set up Python 3.12
         uses: actions/setup-python@v4
         with:
-          python-version: 3.9
+          python-version: 3.12
+
+      - name: Cache Poetry dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pypoetry
+          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-poetry-
 
       - name: Install Poetry
         run: |
@@ -27,6 +43,14 @@ jobs:
       - name: Install dependencies
         run: |
           poetry install
+
+      - name: Check for syntax errors
+        run: |
+          poetry run flake8 .
+
+      - name: Run migrations
+        run: |
+          poetry run python manage.py migrate
 
       - name: Run tests
         run: |
